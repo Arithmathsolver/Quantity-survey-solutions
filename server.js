@@ -14,24 +14,24 @@ app.post('/upload', upload.single('file'), (req, res) => {
   const filePath = path.join(__dirname, req.file.path);
   const scaleInput = req.body.scale || '1:100';
 
-  console.log(`File path: ${filePath}`);
-  console.log(`Scale input: ${scaleInput}`);
-
   const python = spawn('python', ['analyze.py', filePath, scaleInput]);
 
   let result = '';
+  let errorOutput = '';
+
   python.stdout.on('data', (data) => {
     result += data.toString();
   });
 
   python.stderr.on('data', (data) => {
-    console.error(`Python stderr: ${data}`);
+    errorOutput += data.toString();
   });
 
   python.on('close', (code) => {
     if (code !== 0) {
       console.error(`Python exited with code ${code}`);
-      return res.status(500).send("Processing failed");
+      console.error(errorOutput);
+      return res.status(500).send(`Error: ${errorOutput || 'Processing failed'}`);
     }
     res.send(result);
   });
