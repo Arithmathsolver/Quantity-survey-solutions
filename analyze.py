@@ -29,6 +29,7 @@ def main():
     image = load_image(file_path)
     if image is None:
         print(json.dumps({"error": "Unable to load image"}))
+        sys.exit(1)  # added for safety
         return
 
     model = YOLO('yolov8n.pt')
