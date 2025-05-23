@@ -3,6 +3,8 @@ import json
 import cv2
 import fitz  # PyMuPDF
 from ultralytics import YOLO
+import os
+import urllib.request
 
 file_path = sys.argv[1]
 scale_input = sys.argv[2]
@@ -25,14 +27,23 @@ def apply_scale(length_px, scale_str):
     except:
         return length_px
 
+def download_model_if_missing(model_path):
+    if not os.path.exists(model_path):
+        print("Model not found. Downloading...")
+        url = "https://github.com/ultralytics/assets/releases/download/v8.0.0/yolov8n.pt"
+        urllib.request.urlretrieve(url, model_path)
+        print("Model downloaded.")
+
 def main():
     image = load_image(file_path)
     if image is None:
         print(json.dumps({"error": "Unable to load image"}))
-        sys.exit(1)  # added for safety
         return
 
-    model = YOLO('yolov8n.pt')
+    model_path = 'yolov8n.pt'
+    download_model_if_missing(model_path)
+
+    model = YOLO(model_path)
     results = model(image)
 
     items = []
