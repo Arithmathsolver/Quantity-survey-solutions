@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AI Quantity Surveyor</title>
+  <title>Quantity Survey AI</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app">
-    <h1>AI Quantity Surveyor</h1>
-    <form id="upload-form">
-      <input type="file" id="drawing-upload" accept="image/*,.pdf" required />
-      <input type="text" id="scale-input" placeholder="Enter scale (e.g., 1:100)" required />
-      <button type="submit">Upload and Process</button>
+  <div class="container">
+    <h1>Quantity Survey Solution</h1>
+    <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" required />
+      <input type="text" name="scale" placeholder="Enter scale e.g. 1:100" required />
+      <button type="submit">Upload</button>
     </form>
-    <div id="results"></div>
+    <pre id="result"></pre>
   </div>
   <script src="script.js"></script>
 </body>
