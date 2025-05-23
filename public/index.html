@@ -1,1 +1,21 @@
-p
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Quantity Surveyor</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <h1>AI Quantity Surveyor</h1>
+    <form id="upload-form">
+      <input type="file" id="drawing-upload" accept="image/*,.pdf" required />
+      <input type="text" id="scale-input" placeholder="Enter scale (e.g., 1:100)" required />
+      <button type="submit">Upload and Process</button>
+    </form>
+    <div id="results"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
