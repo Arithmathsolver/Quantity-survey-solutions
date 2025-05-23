@@ -1,38 +1,36 @@
 const express = require('express');
 const multer = require('multer');
-const cors = require('cors');
-const { PythonShell } = require('python-shell');
+const { spawn } = require('child_process');
 const path = require('path');
-const fs = require('fs');
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
 app.use(express.static('public'));
-app.use(express.json());
-
 const upload = multer({ dest: 'uploads/' });
 
-app.post('/process', upload.single('drawing'), (req, res) => {
-  const scale = req.body.scale;
-  const filePath = req.file.path;
+app.post('/upload', upload.single('file'), (req, res) => {
+  const filePath = path.join(__dirname, req.file.path);
+  console.log(`Received file: ${filePath}`);
 
-  let options = {
-    args: [filePath, scale]
-  };
+  const python = spawn('python', ['analyze.py', filePath]);
 
-  PythonShell.run('analyze.py', options, function (err, results) {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'Processing failed.' });
+  python.stdout.on('data', (data) => {
+    console.log(`Python output: ${data}`);
+    res.send(`Result: ${data}`);
+  });
+
+  python.stderr.on('data', (data) => {
+    console.error(`Python stderr: ${data}`);
+  });
+
+  python.on('close', (code) => {
+    if (code !== 0) {
+      console.error(`Python process exited with code ${code}`);
+      return res.status(500).send("Processing failed");
     }
-
-    fs.unlinkSync(filePath);
-    res.json({ results: JSON.parse(results[0]) });
   });
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
