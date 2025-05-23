@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: ai-qs-app
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js
+    plan: free
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10
